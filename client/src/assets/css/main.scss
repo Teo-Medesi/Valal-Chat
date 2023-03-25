@@ -3,9 +3,12 @@ $secondary: #077d3e;
 $tertiary: #f6f6f6;
 $quaternary: #670404;
 
+$black2: #0a0a0a;
 $black: #050505;
 $gray2: #222222;
 $gray: #838181;
+
+$white: #EEEEEE;
 
 * {
   margin: 0;
@@ -16,8 +19,88 @@ $gray: #838181;
   box-sizing: border-box;
 }
 
+.chat-container {
+  border: 0.25rem solid $secondary;
+  border-right: 0;
+  border-left: 0;
+  background: $black;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  
+  .active {
+    background: $black2;
+  }
+
+  .side-panel {
+    flex-basis: 20%;
+    border-right: 0.25rem solid $secondary;
+
+    .chat-session-block {
+      display: flex;
+      gap: 1rem;
+      border-bottom: 0.25rem solid $secondary;
+      padding: 1rem;
+      cursor: pointer;
+      
+      
+      img {
+        width: 2rem;
+        height: 2rem;
+      }
+
+      .text {
+        display: flex;
+        flex-direction: column;
+        color: $white;
+
+        h1 {
+          font-size: 1.25rem;
+        }
+        
+        p {
+          color: $secondary;
+        }
+
+      }
+    }
+  }
+
+  .chat {
+    flex-basis: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    input {
+      border-radius: 0;
+      background-color: $black2;
+      padding: 1.5rem;
+      color: $gray;
+    }
+
+    .chat-block {
+      width: 100%;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      color: $gray;
+      
+      .message {
+        color: $white;
+        display: inline;
+        padding: 1rem;
+        border-radius: 1rem;
+        background: $secondary;
+        width: max-content;
+      }
+    }
+  }
+
+}
+
 .room-container {
-  border: 0.5rem solid $secondary;
+  border: 0.25rem solid $secondary;
   border-right: 0;
   border-left: 0;
   background: $black;
@@ -94,9 +177,13 @@ input,
 button {
   padding: 1rem;
   border: none;
-  border-radius: 0.25rem;
+  border-radius: 1rem;
 }
 
 button {
   cursor: pointer;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-weight: 500;
 }
