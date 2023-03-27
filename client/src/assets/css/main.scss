@@ -163,11 +163,25 @@ $white: #EEEEEE;
         }
       }
 
-      button {
-        background-color: $secondary;
-        color: $primary;
-        font-weight: 600;
-        width: 50%;
+      .buttons {
+        display: flex;
+        gap: 2rem;
+        width: 100%;
+        
+        button {
+          width: 100%;
+        }
+
+        .join {
+          font-weight: 600;
+          color: $primary;
+          background-color: $secondary;
+        }
+
+        .create {
+          color: $white;
+          background-color: $gray2;
+        }
       }
     }
   }

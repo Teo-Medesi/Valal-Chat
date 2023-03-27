@@ -4,12 +4,11 @@ import JoinRoom from "./pages/JoinRoom"
 import Chat from "./pages/Chat"
 import io from "socket.io-client"
 import './assets/css/main.scss'
-const SocketContext = createContext();
+
+export const SocketContext = createContext();
 
 function App() {
   const socket = io(`http://localhost:${import.meta.env.VITE_PORT}`);
-
-  useEffect(() => {console.log(import.meta.env.VITE_PORT)}, [])
 
   return (
     <SocketContext.Provider value={socket}>
