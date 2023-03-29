@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 
 dotenv.config({path: "../.env"});
 
-mongoose.connect("mongodb://127.0.0.1:27017", {
+mongoose.connect("mongodb://127.0.0.1:27017/chatApp", {
   useUnifiedTopology: true,
   useNewUrlParser: true
 })
@@ -48,17 +48,16 @@ io.on("connection", socket => {
       const room = new Room({
         name: data.room,
         messages: [],
-        participants: [data.username]
+        participants: [{username: data.username}]
       });
 
       await room.save();
       response({status: "OK"});
     }
     catch (error) {
-      response({status: "ERROR", error: error});
+      console.error(error.messa);
+      response({status: "ERROR", error: String(error)});
     }
-
-
   });
 
 

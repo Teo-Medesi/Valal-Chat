@@ -6,6 +6,7 @@ const JoinRoom = () => {
   
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
+  const [error, setError] = useState("");
 
   const handleJoin = () => {
     socket.emit("join_room", {username, room}, (response) => {
@@ -16,6 +17,9 @@ const JoinRoom = () => {
   const handleCreate = () => {
     socket.emit("create_room", {username, room}, (response) => {
       console.log(response.status, response.error);
+
+      if (response.error) setError(response.error)
+      else setError("");
     });
   }
 
@@ -32,11 +36,12 @@ const JoinRoom = () => {
           <div className="input-form">
             <label>Room</label>
             <input onChange={event => setRoom(event.target.value)} type="text" placeholder="robotics-101" />
+            <p className="error">{error}</p>
           </div>
           
           <div className="buttons">
-            <button className="join" onClick={handleJoin}>Join Room</button>
-            <button className="create" onClick={handleCreate}>Create Room</button>
+            <button tabIndex={[0]} className="join" onClick={handleJoin}>Join Room</button>
+            <button tabIndex={[0]} className="create" onClick={handleCreate}>Create Room</button>
           </div>
         </div>
       </section>

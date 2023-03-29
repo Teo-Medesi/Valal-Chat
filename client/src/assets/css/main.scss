@@ -124,16 +124,17 @@ $white: #EEEEEE;
     .ribbon {
       text-shadow: 4px 4px $gray2;
       padding: 0 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      text-align: center;
       color: $secondary;
-      background-color: $black;
       font-weight: 600;
       font-stretch: expanded;
       font-size: 3rem;
       width: 100%;
       height: 10%;
+    }
+
+    .error {
+      text-shadow: none;
     }
 
     .input {
@@ -185,6 +186,12 @@ $white: #EEEEEE;
       }
     }
   }
+}
+
+.error {
+  color: $quaternary;
+  font-style: italic;
+  font-weight: 500;
 }
 
 input,
