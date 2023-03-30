@@ -1,24 +1,24 @@
-import express from "express"
-import http from "http"
-import { Server } from "socket.io"
-import * as dotenv from "dotenv"
+import express, { response } from "express";
+import http from "http";
+import { Server } from "socket.io";
+import * as dotenv from "dotenv";
 import Room from "./models/Room.js";
 import mongoose from "mongoose";
 
-dotenv.config({path: "../.env"});
+dotenv.config({ path: "../.env" });
 
 mongoose.connect("mongodb://127.0.0.1:27017/chatApp", {
   useUnifiedTopology: true,
-  useNewUrlParser: true
-})
+  useNewUrlParser: true,
+});
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
-    cors: {
-      origin: ["http://localhost:5174", "http://localhost:5173"],
-      methods: ["GET", "POST", "DELETE", "PUT"]
-    }
+  cors: {
+    origin: ["http://localhost:5174", "http://localhost:5173"],
+    methods: ["GET", "POST", "DELETE", "PUT"],
+  },
 });
 
 /*
@@ -35,40 +35,53 @@ const io = new Server(server, {
 
 */
 
-io.on("connection", socket => {
+io.on("connection", (socket) => {
+  socket.on("join_room", async (data, response) => {
+    const room = await Room.findOne({ name: data.room });
 
-  socket.on("join_room", (data, response) => {
-    console.log(data);
+    if (!room) response({ status: "ERROR", error: "no room found" });
+    if (room.participants.includes({username: data.username})) response({status: "OK"})
+
+    room.participants.push({ username: data.username });
+    room.save();
+
+    response({ status: "OK" });
   });
 
   socket.on("create_room", async (data, response) => {
-    console.log(data);
-    
     try {
       const room = new Room({
         name: data.room,
         messages: [],
-        participants: [{username: data.username}]
+        participants: [{ username: data.username }],
       });
 
-      await room.save();
-      response({status: "OK"});
-    }
-    catch (error) {
-      console.error(error.messa);
-      response({status: "ERROR", error: String(error)});
+      const roomQuery = await Room.findOne({ name: this.name });
+      if (roomQuery) throw new Error("Room already exists!");
+      else await room.save();
+
+      response({ status: "OK" });
+    } catch (error) {
+      response({ status: "ERROR", error: String(error) });
     }
   });
 
+  socket.on("validate_connection", async (data, response) => {
+    const room = await Room.findOne({name: roomName});
 
-  socket.on("disconnection", socket => {
+    if (!room) response({status: "ERROR", error: "no room found"});
+    if (!room.participants.includes(user)) response({status: "ERROR", error: "access denied"}); 
+
+    response({status: "OK"});
+  })
+
+  socket.on("disconnection", (socket) => {
     console.log("user disconnected.");
   });
+});
 
-})
-
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000;
 
 server.listen(port, () => {
   console.log(`running server on port ${port}...`);
-})
+});

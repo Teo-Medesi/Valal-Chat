@@ -4,7 +4,11 @@ import ChatSessionBlock from "../components/ChatSessionBlock"
 
 const Chat = () => {
   const [message, setMessage] = useState("");
-  
+
+  const fetchRoom = async () => {
+    
+  } 
+
   
   return (
     <div className="chat-container">

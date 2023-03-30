@@ -1,20 +1,29 @@
 import { useContext, useState } from "react"
-import { SocketContext } from "../App";
+import { useNavigate } from "react-router-dom";
+import { GlobalContext} from "../App";
 
 const JoinRoom = () => {
-  const socket = useContext(SocketContext);
+  const {socket, userState} = useContext(GlobalContext);
+  const [user, setUser] = userState;
+
+  const navigate = useNavigate();
   
   const [username, setUsername] = useState("");
   const [room, setRoom] = useState("");
   const [error, setError] = useState("");
 
   const handleJoin = () => {
+    setUser(username);
     socket.emit("join_room", {username, room}, (response) => {
-      console.log(response.status);
+      console.log(response.status, response.error);
+      
+      if (response.error) setError(response.error);
+      else navigate(`/client/rooms/${room}`);
     });
   }
 
   const handleCreate = () => {
+    setUser(username);
     socket.emit("create_room", {username, room}, (response) => {
       console.log(response.status, response.error);
 
