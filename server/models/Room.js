@@ -14,7 +14,7 @@ const messageSchema = new Schema({
     require: true
   },
   sender: participantSchema
-});
+}, {timestamps: true});
 
 const roomSchema = new Schema({
   name: {

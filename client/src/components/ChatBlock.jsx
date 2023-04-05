@@ -1,10 +1,10 @@
 
-const ChatBlock = ({text, autor}) => {
+const ChatBlock = ({message, author}) => {
   return (
     <div className="chat-block">
-      <p className="autor">{autor}</p>
+      <p className="autor">{author}</p>
       <div className="message">
-        {text}
+        {message}
       </div>
     </div>
   )

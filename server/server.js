@@ -35,25 +35,55 @@ const io = new Server(server, {
 
 */
 
-app.post("/api/generate", (req, res) => {
-
-})
-
 io.on("connection", (socket) => {
+  socket.on("send_message", async (data, messageResponse) => {
+    console.log("receiving message ", data);
+
+    try {
+      const room = await Room.findOne({ name: data.room });
+      if (room) {
+        const newMessage = room.messages.create({
+          text: data.message,
+          sender: { username: data.user },
+        });
+        socket.broadcast.emit("new_message", newMessage);
+      }
+    } catch (error) {
+      messageResponse({ status: "ERROR", error });
+      console.error(error);
+    }
+  });
+
+  socket.on("get_room", async (data, response) => {
+    try {
+      const room = await Room.findOne({ name: data.room });
+
+      if (room)
+        response({
+          status: "OK",
+          room: room,
+          message: "successfuly found room",
+        });
+      else response({ status: "NOT FOUND", message: "no room found" });
+    } catch (error) {
+      response({ status: "ERROR", error: error });
+    }
+  });
+
   socket.on("join_room", async (data, response) => {
     try {
       const room = await Room.findOne({ name: data.room });
-  
+
       if (!room) response({ status: "ERROR", error: "no room found" });
-      if (room.participants.includes({username: data.username})) response({status: "OK"})
-  
+      if (room.participants.includes({ username: data.username }))
+        response({ status: "OK" });
+
       room.participants.push({ username: data.username });
       room.save();
-  
+
       response({ status: "OK" });
-    }
-    catch (error) {
-      response({status: "ERROR", error: String(error)});
+    } catch (error) {
+      response({ status: "ERROR", error: String(error) });
     }
   });
 
@@ -77,21 +107,18 @@ io.on("connection", (socket) => {
 
   socket.on("validate_connection", async (data, response) => {
     try {
-      const room = await Room.findOne({name: data.room});
-      console.log("participants: ", room.participants)
+      const room = await Room.findOne({ name: data.room });
 
-      if (!room) response({status: "ERROR", error: "no room found"});
-      room.participants.forEach(participant => {
-        console.log(participant.username)
-        if (participant.username === data.user) response({status: "OK"});
-      })
+      if (!room) response({ status: "ERROR", error: "no room found" });
+      room.participants.forEach((participant) => {
+        if (participant.username === data.user) response({ status: "OK" });
+      });
 
-      response({status: "ERROR", error: "access denied"}); 
-    }    
-    catch(error) {
-      response({status: "ERROR", error: String(error)});
+      response({ status: "ERROR", error: "access denied" });
+    } catch (error) {
+      response({ status: "ERROR", error: String(error) });
     }
-  })
+  });
 
   socket.on("disconnection", (socket) => {
     console.log("user disconnected.");
