@@ -1,8 +1,18 @@
+import { useEffect, useState } from "react";
+import { useUser } from "../App"
 
-const ChatBlock = ({message, author}) => {
+const ChatBlock = ({message, sender}) => {
+  const [user, dispatch] = useUser();
+  const [isMessageByUser, setIsMessageByUser] = useState(false);
+
+  useEffect(() => {
+    if (sender === user) setIsMessageByUser(true);
+  }, [user]);
+  
+
   return (
-    <div className="chat-block">
-      <p className="autor">{author}</p>
+    <div className={(isMessageByUser ? "user-chat-block" : "foreign-chat-block")}>
+      <p className="sender">{sender}</p>
       <div className="message">
         {message}
       </div>

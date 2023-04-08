@@ -133,6 +133,7 @@ $white: #EEEEEE;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow-y: scroll;
 
     input {
       border-radius: 0;
@@ -141,9 +142,9 @@ $white: #EEEEEE;
       color: $gray;
     }
 
-    .chat-block {
+    .user-chat-block {
       width: 100%;
-      padding: 1rem;
+      padding: 1rem 2rem;
       display: flex;
       flex-direction: column;
       color: $gray;
@@ -155,6 +156,15 @@ $white: #EEEEEE;
         border-radius: 1rem;
         background: $secondary;
         width: max-content;
+      }
+    }
+
+    .foreign-chat-block {
+      @extend .user-chat-block;
+      align-items: end;
+
+      .message {
+        background: $quaternary;
       }
     }
   }

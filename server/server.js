@@ -36,20 +36,27 @@ const io = new Server(server, {
 */
 
 io.on("connection", (socket) => {
-  socket.on("send_message", async (data, messageResponse) => {
-    console.log("receiving message ", data);
 
+  socket.on("send_message", async (data, response) => {
+    console.log("receiving message ", data);
     try {
       const room = await Room.findOne({ name: data.room });
+
       if (room) {
         const newMessage = room.messages.create({
           text: data.message,
           sender: { username: data.user },
         });
-        socket.broadcast.emit("new_message", newMessage);
+
+        room.messages.push(newMessage);
+        await room.save();
+
+        io.emit("new_message", newMessage);
+        response({status: "OK", message: "successfully created new message"});
       }
+
     } catch (error) {
-      messageResponse({ status: "ERROR", error });
+      response({ status: "ERROR", error });
       console.error(error);
     }
   });
